@@ -7,6 +7,7 @@ resource "aws_instance" "app" {
 	instance_type = "t3.micro"
 	availability_zone = "eu-north-1a"
 	ami = "ami-09a9858973b288bdd"
+	vpc_security_group_ids = [aws_security_group.instance.id]
 	user_data = <<-EOF
 		#!/bin/bash
 		echo "Hello, World" > index.html
@@ -14,5 +15,14 @@ resource "aws_instance" "app" {
 		EOF
 	tags = {
 	Name = "terraform-example"
+}
+}
+resource "aws_security_group" "instance" {
+name = "terraform-example-instance"
+ingress {
+from_port = 8080
+to_port = 8080
+protocol = "tcp"
+cidr_blocks = ["0.0.0.0/0"]
 }
 }
